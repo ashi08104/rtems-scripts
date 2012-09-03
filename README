@@ -1,0 +1,93 @@
+Handy scripts for RTEMS
+=======================
+
+This is a set of script used to recompile RTEMS, tested with RTEMS 4.8
+and 4.11.
+
+---------------------------------------------------------------------------
+IMPORTANT NOTICE:
+-----------------
+
+Before you start, make sure that the GCC you use has support for C and
+Ada, and that its major revision is 4.(x-1) if you need to build 4.x.
+
+It worked for building GCC 4.6.2 using 4.4.5 on debian, but this is
+not guaranteed.
+
+---------------------------------------------------------------------------
+
+Here is the procedure
+
+1/ Create a MANIFEST file that stores the links to the source files
+
+   A default MANIFEST_rtems_4.8 is provided, with links to RTEMS
+   source for RTEMS 4.8.
+
+2/ Source rtems.env file
+
+   A default rtems_4.8.env is provided, with links to RTEMS
+   source for RTEMS 4.8.
+
+3/ Fetch all sources:
+
+   ./fetch_rtems_source.sh
+
+3/ Install autoconf and automake
+
+   ./build_autoconf.sh
+   ./build_automake.sh
+
+4/ Install binutils, note this script will recompile binutils for all
+   architectures
+
+   ./build_binutils_rtems.sh 
+
+5/ Compile GCC for native platform, note this requires a gcc with an
+   Ada front-end. Also, it is recommended to use the same release to 
+   avoid bootstrap issues.
+
+   Note: for GCC 4.6.x and above, it is required to install GMP, MPFR
+   and MPC in this order:
+
+   ./build_gmp.sh
+   ./build_mpfr.sh
+   ./build_mpc.sh
+
+   ./build_gcc_native.sh
+
+   If you experience issue with crti.o, please read
+   http://askubuntu.com/questions/75116/how-do-you-build-older-gcc-versions-errors-about-crti-o-not-being-found
+   and the note 1819 on TASTE bugtrack
+   http://taste.tuxfamily.org/mantis/view.php?id=281#c1819
+
+6/ Compile GCC for cross-platform, only the C front-end and newlib
+
+   ./build_gcc_rtems_c_only.sh
+
+7/ Build RTEMS
+
+Note that now, RTEMS has to be built _before_ gnat, see comment in
+gsocket.c, otherwise, the Ada RTS cannot be built because of a missing
+sys/socket.h header file
+
+/*
+ * RTEMS has these .h files but not until you have built and installed
+ * RTEMS. When building a C/C++ toolset, you also build the newlib C library.
+ * So the build procedure for an RTEMS GNAT toolset requires that
+ * you build a C/C++ toolset, then build and install RTEMS with 
+ * --enable-multilib, and finally build the Ada part of the toolset.
+ */
+
+Warning, you have to adjust this script to position the RTEMS source directory
+Also, you have to keep --enable-multilib to install GNAT in the next step
+
+   ./build_rtems.sh
+
+
+8/ Compile GCC for cross-platform, all front-ends
+
+   ./build_gcc_rtems.sh
+
+9/ Build gdb for cross-platform
+
+   ./build_gdb.sh
