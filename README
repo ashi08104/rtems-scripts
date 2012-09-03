@@ -1,5 +1,6 @@
 This is from: 
 http://taste.tuxfamily.org/wiki/index.php?title=RTEMSBuild
+I've updated it to my env.
 
 Handy scripts for RTEMS
 =======================
@@ -14,7 +15,7 @@ IMPORTANT NOTICE:
 Before you start, make sure that the GCC you use has support for C and
 Ada, and that its major revision is 4.(x-1) if you need to build 4.x.
 
-It worked for building GCC 4.6.2 using 4.4.5 on debian, but this is
+It worked for building GCC 4.6.3 using gcc 4.7.1 on archlinux, but this is
 not guaranteed.
 
 ---------------------------------------------------------------------------
